@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro — Carrera de Año Nuevo 2027</title>
+    <style>
+         :root {
+            --navy: #01222C;
+            --orange: #F66204;
+            --peach: #F7A85D;
+            --white: #FFFFFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+            background: var(--navy);
+            color: var(--white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        /* ===== Efecto visual: fondo animado ===== */
+        
+        .bg-blobs {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.45;
+            animation: float 14s ease-in-out infinite;
+        }
+        
+        .blob-1 {
+            width: 420px;
+            height: 420px;
+            background: var(--orange);
+            top: -120px;
+            left: -100px;
+        }
+        
+        .blob-2 {
+            width: 360px;
+            height: 360px;
+            background: var(--peach);
+            bottom: -140px;
+            right: -80px;
+            animation-delay: -6s;
+        }
+        
+        .blob-3 {
+            width: 260px;
+            height: 260px;
+            background: var(--orange);
+            top: 45%;
+            left: 65%;
+            opacity: 0.25;
+            animation-delay: -3s;
+        }
+        
+        @keyframes float {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(40px, -30px) scale(1.12);
+            }
+        }
+        /* ===== Estructura ===== */
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 48px 20px 80px;
+        }
+        /* ===== Hero ===== */
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeDown 0.9s ease both;
+        }
+        
+        .hero .badge {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--orange), var(--peach));
+            color: var(--navy);
+            font-weight: 800;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            padding: 7px 18px;
+            border-radius: 999px;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+        }
+        
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 900;
+            line-height: 1.1;
+            background: linear-gradient(90deg, var(--white), var(--peach), var(--orange));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .hero p {
+            margin-top: 14px;
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 1.05rem;
+        }
+        
+        .hero .meta {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: var(--peach);
+            font-weight: 600;
+        }
+        /* ===== Logo como marca de agua (fondo del formulario) ===== */
+        
+        .form-area {
+            position: relative;
+        }
+        
+        .logo-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(480px, 90%);
+            opacity: 0.07;
+            pointer-events: none;
+            /* El logo NO estorba: se puede hacer clic "a través" de él */
+            animation: logoBreath 8s ease-in-out infinite;
+        }
+        
+        @keyframes logoBreath {
+            0%,
+            100% {
+                opacity: 0.06;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 0.12;
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+        }
+        /* ===== Tarjeta del formulario ===== */
+        
+        .card {
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            backdrop-filter: blur(12px);
+            border-radius: 22px;
+            padding: 36px;
+            animation: fadeUp 0.9s ease 0.25s both;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+        }
+        
+        fieldset {
+            border: none;
+            margin-bottom: 30px;
+        }
+        
+        legend {
+            color: var(--peach);
+            font-weight: 800;
+            font-size: 1.05rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        legend::before {
+            content: "";
+            display: inline-block;
+            width: 26px;
+            height: 4px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--orange), var(--peach));
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+        
+        .full {
+            grid-column: 1 / -1;
+        }
+        
+        @media (max-width: 560px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .card {
+                padding: 24px 18px;
+            }
+        }
+        
+        label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            margin-bottom: 7px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+        }
+        
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px 15px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(255, 255, 255, 0.18);
+            background: rgba(1, 34, 44, 0.6);
+            color: var(--white);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s, transform 0.15s;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 4px rgba(246, 98, 4, 0.22);
+            transform: translateY(-1px);
+        }
+        
+        select option {
+            background: var(--navy);
+            color: var(--white);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .radio-group,
+        .check-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .radio-pill {
+            position: relative;
+        }
+        
+        .radio-pill input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .radio-pill input:checked+span {
+            background: linear-gradient(90deg, var(--orange), var(--peach));
+            color: var(--navy);
+            font-weight: 800;
+            border-color: transparent;
+            box-shadow: 0 6px 18px rgba(246, 98, 4, 0.4);
+        }
+        
+        .radio-pill span {
+            display: inline-block;
+            padding: 11px 20px;
+            border-radius: 999px;
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+            font-size: 0.92rem;
+            transition: all 0.25s;
+            user-select: none;
+        }
+        
+        .radio-pill span:hover {
+            border-color: var(--peach);
+        }
+        
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+        
+        .check-item input {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: var(--orange);
+            flex-shrink: 0;
+        }
+        
+        .check-item a {
+            color: var(--peach);
+        }
+        /* ===== Botón con efecto ===== */
+        
+        .btn-submit {
+            width: 100%;
+            padding: 17px;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            color: var(--white);
+            background: linear-gradient(90deg, var(--orange), var(--peach), var(--orange));
+            background-size: 220% 100%;
+            transition: background-position 0.5s, transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 12px 32px rgba(246, 98, 4, 0.35);
+        }
+        
+        .btn-submit:hover {
+            background-position: 100% 0;
+            transform: translateY(-2px);
+            box-shadow: 0 16px 40px rgba(246, 98, 4, 0.5);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+        /* ===== Mensajes de estado ===== */
+        
+        .status {
+            display: none;
+            text-align: center;
+            margin-top: 18px;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 700;
+            animation: fadeUp 0.4s ease both;
+        }
+        
+        .status.ok {
+            display: block;
+            background: rgba(42, 187, 108, 0.15);
+            border: 1px solid rgba(42, 187, 108, 0.5);
+            color: #6ee7a8;
+        }
+        
+        .status.err {
+            display: block;
+            background: rgba(230, 60, 60, 0.15);
+            border: 1px solid rgba(230, 60, 60, 0.5);
+            color: #ff8f8f;
+        }
+        /* ===== Sección mapa ===== */
+        
+        .map-box {
+            margin-top: 26px;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+        }
+        
+        .map-caption {
+            padding: 14px 20px;
+            text-align: center;
+            background: radial-gradient(circle at 30% 40%, rgba(246, 98, 4, 0.18), transparent 55%), rgba(1, 34, 44, 0.65);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.92rem;
+        }
+        
+        .map-caption strong {
+            color: var(--peach);
+            font-size: 1rem;
+        }
+        
+        .map-frame {
+            display: block;
+            width: 100%;
+            height: 340px;
+            border: 0;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 36px;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.8rem;
+            animation: fadeUp 0.9s ease 0.5s both;
+        }
+        
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(26px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-26px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <!-- ===== HERO ===== -->
+        <header class="hero">
+            <span class="badge">Gran Evento Deportivo</span>
+            <h1>CARRERA DE AÑO NUEVO 2027</h1>
+            <p>Registra tu participación y asegura tu lugar en la línea de salida.</p>
+            <div class="meta">
+                <div class="meta-item">📅 10 de enero de 2027</div>
+                <div class="meta-item">📍 Salida: Escuela Oficial Mixta Aldea Sigüila</div>
+                <div class="meta-item">🏃 5K · 10K </div>
+            </div>
+        </header>
+
+        <!-- ===== FORMULARIO (con logo de fondo) ===== -->
+        <div class="form-area">
+            <!-- Logo como marca de agua detrás del formulario -->
+            <img src="logo.png" alt="" class="logo-watermark" aria-hidden="true" />
+
+            <form id="registroForm" class="card" method="POST" action="https://script.google.com/macros/s/AKfycbxxGGqDuxV7oNQff32UIuZxWVJu12Yi8Qotky5HskWuWGBcrjm5ITAzKG6wpgm4qA9Tbg/exec">
+                <!-- Datos personales -->
+                <fieldset>
+                    <legend>Datos del participante</legend>
+                    <div class="grid">
+                        <div class="full">
+                            <label for="nombre">Nombre completo *</label>
+                            <input type="text" id="nombre" name="Nombre" placeholder="Ej. María López Pérez" required />
+                        </div>
+                        <div>
+                            <label for="nacimiento">Fecha de nacimiento *</label>
+                            <input type="date" id="nacimiento" name="FechaNacimiento" required />
+                        </div>
+                        <div>
+                            <label for="documento">DPI / Documento de identidad</label>
+                            <input type="text" id="documento" name="Documento" placeholder="0000 00000 0000" />
+                        </div>
+                        <div>
+                            <label for="genero">Género *</label>
+                            <select id="genero" name="Genero" required>
+                                <option value="">Seleccionar…</option>
+                                <option>Femenino</option>
+                                <option>Masculino</option>
+                                <option>Prefiero no indicar</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="sangre">Tipo de sangre</label>
+                            <select id="sangre" name="TipoSangre">
+                                <option value="">Seleccionar…</option>
+                                <option>A+</option>
+                                <option>A-</option>
+                                <option>B+</option>
+                                <option>B-</option>
+                                <option>AB+</option>
+                                <option>AB-</option>
+                                <option>O+</option>
+                                <option>O-</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="telefono">Teléfono / WhatsApp *</label>
+                            <input type="tel" id="telefono" name="Telefono" placeholder="+502 5555 5555" required />
+                        </div>
+                        <div>
+                            <label for="email">Correo electrónico *</label>
+                            <input type="email" id="email" name="Email" placeholder="tucorreo@ejemplo.com" required />
+                        </div>
+                        <div class="full">
+                            <label for="direccion">Dirección de residencia</label>
+                            <input type="text" id="direccion" name="Direccion" placeholder="Ciudad, municipio" />
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Datos de la carrera -->
+                <fieldset>
+                    <legend>Datos de la carrera</legend>
+                    <div class="grid">
+                        <div class="full">
+                            <label>Distancia en la que participará *</label>
+                            <div class="radio-group" id="distanciaGroup">
+                                <label class="radio-pill"><input type="radio" name="Distancia" value="5K" required /><span>5K</span></label>
+                                <label class="radio-pill"><input type="radio" name="Distancia" value="10K" /><span>10K</span></label>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="categoria">Categoría *</label>
+                            <select id="categoria" name="Categoria" required>
+                                <option value="">Seleccionar…</option>
+                                <option>Juvenil (15–19 años)</option>
+                                <option>Libre (20–39 años)</option>
+                                <option>Master (40+ años)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="talla">Talla de playera *</label>
+                            <select id="talla" name="Talla" required>
+                                <option value="">Seleccionar…</option>
+                                <option>Youth</option>
+                                <option>S</option>
+                                <option>M</option>
+                                <option>L</option>
+                                <option>XL</option>
+                                <option>XXL</option>
+                            </select>
+                        </div>
+                        <div class="full">
+                            <label for="club">Club / Equipo (opcional)</label>
+                            <input type="text" id="club" name="Club" placeholder="Nombre de tu club o equipo" />
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Salud y emergencia -->
+                <fieldset>
+                    <legend>Salud y contacto de emergencia</legend>
+                    <div class="grid">
+                        <div class="full">
+                            <label for="condiciones">Condición médica relevante (alergias, asma, lesiones, etc.)</label>
+                            <textarea id="condiciones" name="CondicionesMedicas" placeholder='Escribe "Ninguna" si no aplica'></textarea>
+                        </div>
+                        <div>
+                            <label for="emergNombre">Contacto de emergencia *</label>
+                            <input type="text" id="emergNombre" name="EmergenciaNombre" placeholder="Nombre completo" required />
+                        </div>
+                        <div>
+                            <label for="emergTel">Teléfono de emergencia *</label>
+                            <input type="tel" id="emergTel" name="EmergenciaTelefono" placeholder="+502 5555 5555" required />
+                        </div>
+                    </div>
+                </fieldset>
+
+
+                <button type="submit" class="btn-submit">Confirmar mi registro</button>
+                <div id="status" class="status"></div>
+            </form>
+        </div>
+
+        <!-- ===== Ubicación (Google Maps) ===== -->
+        <div class="map-box">
+            <div class="map-caption">
+                <strong>📍 Ubicación de la salida y meta</strong>
+            </div>
+            <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d61689.57425025727!2d-91.62827286898622!3d14.903718780540263!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x858e995d0c2d62c7%3A0x375f8c17c1680d0a!2sEscuela%20Oficial%20Mixta%20Aldea%20Sig%C3%BCila!5e0!3m2!1ses!2sgt!4v1794281707564!5m2!1ses!2sgt"
+                loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+
+        <footer>CARRERA DE AÑO NUEVO 2027 · Todos los derechos reservados</footer>
+    </div>
+
+    <script>
+        // ============================================================
+        // ENVÍO A GOOGLE SHEETS vía Google Apps Script.
+        // ============================================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxxGGqDuxV7oNQff32UIuZxWVJu12Yi8Qotky5HskWuWGBcrjm5ITAzKG6wpgm4qA9Tbg/exec";
+
+        const form = document.getElementById("registroForm");
+        const statusBox = document.getElementById("status");
+        const btn = form.querySelector(".btn-submit");
+
+        form.addEventListener("submit", async(e) => {
+            e.preventDefault();
+
+            // Validación extra: distancia seleccionada
+            if (!form.Distancia.value) {
+                statusBox.className = "status err";
+                statusBox.textContent = "⚠️ Selecciona una distancia (5K o 10K).";
+                return;
+            }
+
+            const data = Object.fromEntries(new FormData(form).entries());
+
+            btn.disabled = true;
+            btn.textContent = "Enviando…";
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors", // evita problemas de CORS con Apps Script
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify({...data,
+                        FechaRegistro: new Date().toISOString()
+                    })
+                });
+                statusBox.className = "status ok";
+                statusBox.textContent = "🎉 ¡Registro exitoso! Te esperamos el 1 de enero de 2027.";
+                form.reset();
+            } catch (err) {
+                statusBox.className = "status err";
+                statusBox.textContent = "⚠️ Ocurrió un error. Intenta de nuevo en unos momentos.";
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Confirmar mi registro";
+                statusBox.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
