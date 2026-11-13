@@ -159,7 +159,6 @@
             width: min(480px, 90%);
             opacity: 0.07;
             pointer-events: none;
-            /* El logo NO estorba: se puede hacer clic "a través" de él */
             animation: logoBreath 8s ease-in-out infinite;
         }
         
@@ -392,6 +391,55 @@
             border: 1px solid rgba(230, 60, 60, 0.5);
             color: #ff8f8f;
         }
+        /* ===== Panel de éxito con comprobante ===== */
+        
+        .success-panel {
+            display: none;
+            margin-top: 22px;
+            padding: 22px;
+            border-radius: 16px;
+            background: rgba(42, 187, 108, 0.1);
+            border: 1px solid rgba(42, 187, 108, 0.4);
+            text-align: center;
+            animation: fadeUp 0.5s ease both;
+        }
+        
+        .success-panel.show {
+            display: block;
+        }
+        
+        .success-panel h3 {
+            color: #6ee7a8;
+            font-size: 1.2rem;
+            margin-bottom: 6px;
+        }
+        
+        .success-panel p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        
+        .btn-download {
+            display: inline-block;
+            padding: 13px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            color: var(--white);
+            background: linear-gradient(90deg, #0f9d58, #6ee7a8);
+            box-shadow: 0 10px 26px rgba(15, 157, 88, 0.35);
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
+        
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 34px rgba(15, 157, 88, 0.5);
+        }
         /* ===== Sección mapa ===== */
         
         .map-box {
@@ -470,7 +518,7 @@
             <div class="meta">
                 <div class="meta-item">📅 10 de enero de 2027</div>
                 <div class="meta-item">📍 Salida: Escuela Oficial Mixta Aldea Sigüila</div>
-                <div class="meta-item">🏃 5K · 10K </div>
+                <div class="meta-item">🏃 5K · 10K</div>
             </div>
         </header>
 
@@ -595,6 +643,13 @@
 
                 <button type="submit" class="btn-submit">Confirmar mi registro</button>
                 <div id="status" class="status"></div>
+
+                <!-- ===== Panel de éxito con comprobante descargable ===== -->
+                <div id="successPanel" class="success-panel">
+                    <h3>🎉 ¡Registro confirmado!</h3>
+                    <p>Descarga tu comprobante como imagen y preséntalo el día del evento.</p>
+                    <button type="button" id="btnDownload" class="btn-download">⬇️ Descargar comprobante</button>
+                </div>
             </form>
         </div>
 
@@ -619,6 +674,10 @@
         const form = document.getElementById("registroForm");
         const statusBox = document.getElementById("status");
         const btn = form.querySelector(".btn-submit");
+        const successPanel = document.getElementById("successPanel");
+        const btnDownload = document.getElementById("btnDownload");
+
+        let lastRegistration = null; // guardamos los datos del último registro
 
         form.addEventListener("submit", async(e) => {
             e.preventDefault();
@@ -647,7 +706,11 @@
                     })
                 });
                 statusBox.className = "status ok";
-                statusBox.textContent = "🎉 ¡Registro exitoso! Te esperamos el 1 de enero de 2027.";
+                statusBox.textContent = "";
+
+                // Guardamos los datos para el comprobante y mostramos el panel
+                lastRegistration = data;
+                successPanel.classList.add("show");
                 form.reset();
             } catch (err) {
                 statusBox.className = "status err";
@@ -655,10 +718,191 @@
             } finally {
                 btn.disabled = false;
                 btn.textContent = "Confirmar mi registro";
-                statusBox.scrollIntoView({
+                successPanel.scrollIntoView({
                     behavior: "smooth",
                     block: "center"
                 });
+            }
+        });
+
+        // ============================================================
+        // GENERADOR DE COMPROBANTE (imagen PNG con Canvas API)
+        // ============================================================
+        btnDownload.addEventListener("click", () => {
+            if (!lastRegistration) return;
+
+            // Formato historia de redes sociales (9:16)
+            const W = 1080,
+                H = 1920;
+            const canvas = document.createElement("canvas");
+            canvas.width = W;
+            canvas.height = H;
+            const ctx = canvas.getContext("2d");
+
+            // Fondo degradado con los colores corporativos
+            const bg = ctx.createLinearGradient(0, 0, W, H);
+            bg.addColorStop(0, "#01222C");
+            bg.addColorStop(1, "#013748");
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, W, H);
+
+            // Franja decorativa superior naranja
+            const stripe = ctx.createLinearGradient(0, 0, W, 0);
+            stripe.addColorStop(0, "#F66204");
+            stripe.addColorStop(1, "#F7A85D");
+            ctx.fillStyle = stripe;
+            ctx.fillRect(0, 0, W, 14);
+
+            // Círculos decorativos suaves
+            ctx.globalAlpha = 0.08;
+            ctx.fillStyle = "#F66204";
+            ctx.beginPath();
+            ctx.arc(W - 60, H - 40, 220, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#F7A85D";
+            ctx.beginPath();
+            ctx.arc(40, 120, 140, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalAlpha = 1;
+
+            // ===== ENCABEZADO =====
+            // Logo circular centrado arriba
+            const drawLogo = () => {
+                if (logoCargado) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(W / 2, 210, 110, 0, Math.PI * 2);
+                    ctx.clip();
+                    ctx.drawImage(logo, W / 2 - 110, 100, 220, 220);
+                    ctx.restore();
+                }
+            };
+
+            // Título del evento
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#FFFFFF";
+            ctx.font = "900 62px 'Segoe UI', sans-serif";
+            ctx.fillText("CARRERA DE", W / 2, 420);
+            ctx.fillText("AÑO NUEVO 2027", W / 2, 495);
+
+            ctx.fillStyle = "#F7A85D";
+            ctx.font = "700 30px 'Segoe UI', sans-serif";
+            ctx.fillText("COMPROBANTE DE REGISTRO", W / 2, 555);
+
+            // ===== TEXTO DE BIENVENIDA =====
+            ctx.fillStyle = "rgba(255,255,255,0.75)";
+            ctx.font = "italic 600 30px 'Segoe UI', sans-serif";
+            ctx.fillText("¡Bienvenido a la familia corredora!", W / 2, 640);
+            ctx.fillText("Tu lugar en la línea de salida está asegurado. 🏃", W / 2, 688);
+
+            // Línea divisoria
+            ctx.strokeStyle = "rgba(247, 168, 93, 0.4)";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(160, 740);
+            ctx.lineTo(W - 160, 740);
+            ctx.stroke();
+
+            // ===== NOMBRE DEL CORREDOR (diseño destacado) =====
+            const d = lastRegistration;
+            const nombre = (d.Nombre || "—").toUpperCase();
+
+            // Tarjeta destacada para el nombre
+            const cardY = 800,
+                cardH = 230;
+            const nameCard = ctx.createLinearGradient(90, cardY, W - 90, cardY + cardH);
+            nameCard.addColorStop(0, "#F66204");
+            nameCard.addColorStop(1, "#F7A85D");
+            ctx.fillStyle = nameCard;
+            // Tarjeta con esquinas redondeadas
+            const r = 30;
+            ctx.beginPath();
+            ctx.moveTo(90 + r, cardY);
+            ctx.arcTo(W - 90, cardY, W - 90, cardY + cardH, r);
+            ctx.arcTo(W - 90, cardY + cardH, 90, cardY + cardH, r);
+            ctx.arcTo(90, cardY + cardH, 90, cardY, r);
+            ctx.arcTo(90, cardY, W - 90, cardY, r);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#01222C";
+            ctx.font = "800 26px 'Segoe UI', sans-serif";
+            ctx.fillText("CORREDOR(A)", W / 2, cardY + 62);
+
+            // Nombre grande, reducido si es muy largo
+            ctx.font = "900 58px 'Segoe UI', sans-serif";
+            let n = nombre;
+            while (ctx.measureText(n).width > W - 260 && n.length > 3) {
+                n = n.slice(0, -2);
+            }
+            if (n !== nombre) n += "…";
+            ctx.fillText(n, W / 2, cardY + 145);
+
+            // Distancia como insignia dentro de la tarjeta
+            ctx.fillStyle = "rgba(1, 34, 44, 0.85)";
+            const badgeW = 170;
+            ctx.beginPath();
+            ctx.roundRect(W / 2 - badgeW / 2, cardY + 168, badgeW, 44, 22);
+            ctx.fill();
+            ctx.fillStyle = "#F7A85D";
+            ctx.font = "800 26px 'Segoe UI', sans-serif";
+            ctx.fillText(d.Distancia || "—", W / 2, cardY + 199);
+
+            // ===== RESTO DE LA INFORMACIÓN =====
+            const rows = [
+                ["CATEGORÍA", d.Categoria || "—"],
+                ["TALLA DE PLAYERA", d.Talla || "—"],
+                ["DOCUMENTO", d.Documento || "No proporcionado"]
+            ];
+
+            let y = 1150;
+            rows.forEach(([label, value]) => {
+                ctx.textAlign = "left";
+                ctx.fillStyle = "#F7A85D";
+                ctx.font = "700 26px 'Segoe UI', sans-serif";
+                ctx.fillText(label, 160, y);
+
+                ctx.fillStyle = "#FFFFFF";
+                ctx.font = "600 40px 'Segoe UI', sans-serif";
+                let v = value;
+                while (ctx.measureText(v).width > W - 380 && v.length > 3) {
+                    v = v.slice(0, -2);
+                }
+                if (v !== value) v += "…";
+                ctx.fillText(v, 160, y + 54);
+                y += 150;
+            });
+
+            // ===== PIE =====
+            ctx.textAlign = "center";
+            ctx.fillStyle = "rgba(255,255,255,0.6)";
+            ctx.font = "600 26px 'Segoe UI', sans-serif";
+            ctx.fillText("📅 10 de enero de 2027", W / 2, H - 170);
+            ctx.fillText("Escuela Oficial Mixta Aldea Sigüila", W / 2, H - 130);
+
+            // Código de registro único
+            const code = "REG-" + Date.now().toString(36).toUpperCase();
+            ctx.fillStyle = "rgba(255,255,255,0.45)";
+            ctx.font = "700 24px 'Segoe UI', sans-serif";
+            ctx.fillText(code, W / 2, H - 70);
+
+            // Logo (si existe logo.png en la carpeta); dibuja y descarga al terminar
+            let logoCargado = false;
+            const logo = new Image();
+            logo.onload = () => {
+                logoCargado = true;
+                drawLogo();
+                descargarImagen(canvas, code);
+            };
+            logo.onerror = () => descargarImagen(canvas, code); // sin logo, igual descarga
+            logo.src = "logo.png";
+
+            function descargarImagen(cv, codigo) {
+                const link = document.createElement("a");
+                link.download = "comprobante-" + codigo + ".png";
+                link.href = cv.toDataURL("image/png");
+                link.click();
             }
         });
     </script>
